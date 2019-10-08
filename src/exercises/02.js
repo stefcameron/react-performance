@@ -15,8 +15,7 @@ function Menu({
   selectedItem,
   setItemCount,
 }) {
-  // 🐨 wrap getItems in a call to `React.useMemo`
-  const items = getItems(inputValue)
+  const items = React.useMemo(() => getItems(inputValue), [inputValue]);
   const itemsToRender = items.slice(0, 100)
   setItemCount(itemsToRender.length)
   return (
