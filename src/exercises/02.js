@@ -1,11 +1,11 @@
-// useMemo for expensive calculations
+// useMemo for expensive calculations -- EXTRA CREDIT SOLUTION
 
 // http://localhost:3000/isolated/exercises/02
 
 import React from 'react'
 import Downshift from 'downshift'
-import {useForceRerender} from '../utils'
-import {getItems} from '../filter-cities'
+import {useForceRerender, useAsync} from '../utils'
+import {getItems} from '../workerized-filter-cities' // web worker (e.g. a JS thread in the browser)
 
 function Menu({
   getMenuProps,
@@ -15,8 +15,11 @@ function Menu({
   selectedItem,
   setItemCount,
 }) {
-  const items = React.useMemo(() => getItems(inputValue), [inputValue]);
-  const itemsToRender = items.slice(0, 100)
+  const {data: items = []} = useAsync(
+    React.useCallback(() => getItems(inputValue), [inputValue])
+  );
+
+  const itemsToRender = items ? items.slice(0, 100) : [];
   setItemCount(itemsToRender.length)
   return (
     <ul
