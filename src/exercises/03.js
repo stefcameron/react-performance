@@ -46,7 +46,7 @@ function Menu({
     </ul>
   )
 }
-// 🐨 Memoize the Menu here using React.memo
+Menu = React.memo(Menu);
 
 function ListItem({
   getItemProps,
@@ -72,7 +72,7 @@ function ListItem({
     </li>
   )
 }
-// 🐨 Memoize the ListItem here using React.memo
+ListItem = React.memo(ListItem);
 
 function FilterComponent() {
   const forceRerender = useForceRerender()
@@ -120,6 +120,13 @@ function FilterComponent() {
     </>
   )
 }
+FilterComponent = React.memo(FilterComponent);
+
+/*
+🦉 Elaboration & Feedback
+After the instruction, copy the URL below into your browser and fill out the form:
+http://ws.kcd.im/?ws=React%20Performance&e=React.memo&em=
+*/
 
 function Usage() {
   return <FilterComponent />
