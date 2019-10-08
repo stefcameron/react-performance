@@ -4,8 +4,7 @@
 
 import React from 'react'
 import Downshift from 'downshift'
-// 🐨 import react-window's FixedSizeList here
-// 💰 import {FixedSizeList as List} from 'react-window'
+import {FixedSizeList as List} from 'react-window';
 import {getItems} from '../workerized-filter-cities'
 import {useAsync, useForceRerender} from '../utils'
 
@@ -16,9 +15,7 @@ function Menu({
   highlightedIndex,
   selectedItem,
   setItemCount,
-  // 🐨 accept a prop called "listRef" here
-  // 💰 I gave you a bit of code to pass the listRef prop here.
-  // You can peek down below in the FilterComponent and I'll explain what I did.
+  listRef
 }) {
   const {data: items = []} = useAsync(
     React.useCallback(() => getItems(inputValue), [inputValue]),
@@ -37,38 +34,35 @@ function Menu({
         },
       })}
     >
-      {/* 💣 remove this items.map call */}
-      {items.map((item, index) => (
-        <ListItem
-          key={item.id}
-          getItemProps={getItemProps}
-          items={items}
-          highlightedIndex={highlightedIndex}
-          selectedItem={selectedItem}
-          index={index}
-        />
-      ))}
-      {/*
-        🐨 render the FixedSizeList component here and pass ListItem as children.
-        💰 Here are the props you'll want: ref, width, height, itemCount, itemSize, itemData
-        💰 I'll bet you can figure out their values, let me know if you have trouble.
-      */}
+      <List
+        ref={listRef}
+        width={300}
+        height={300}
+        itemCount={items.length}
+        itemSize={20}
+        itemData={{
+          getItemProps,
+          items,
+          highlightedIndex,
+          selectedItem
+        }}
+      >
+        {ListItem}
+      </List>
     </ul>
   )
 }
 Menu = React.memo(Menu)
 
 function ListItem({
-  // ListItem will now be rendered by react-window and most of the props we
-  // were accepting before will now be passed into an object prop called "data"
-  // 🐨 rewrite this so the following props are properties of a new "data" prop:
-  // getItemProps, items, highlightedIndex, selectedItem
-  getItemProps,
-  items,
-  highlightedIndex,
-  selectedItem,
-  index,
-  // 🐨 accept a new style prop
+  data: {
+    getItemProps,
+    items,
+    highlightedIndex,
+    selectedItem
+  },
+  index, // NOTE: this comes from react-window
+  style // NOTE: this comes from react-window
 }) {
   const item = items[index]
   return (
@@ -79,6 +73,8 @@ function ListItem({
         style: {
           // spread the style object onto this object to merge the styles
           // react-window wants to pass with the ones we want to define.
+          ...style,
+
           backgroundColor: highlightedIndex === index ? 'lightgray' : 'inherit',
           fontWeight:
             selectedItem && selectedItem.id === item.id ? 'bold' : 'normal',
