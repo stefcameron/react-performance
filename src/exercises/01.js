@@ -3,12 +3,8 @@
 // http://localhost:3000/isolated/exercises/01
 
 import React from 'react'
-// 💣 remove this import
-import Tilt from '../tilt'
 
-// 🐨 use React.lazy to create a Tilt component
-// which using a dynamic import to get the Tilt
-// component from the '../tilt' module.
+const Tilt = React.lazy(() => import('../tilt'));
 
 function App() {
   const [showTilt, setShowTilt] = React.useState(false)
@@ -22,11 +18,9 @@ function App() {
         />
         {' show tilt'}
       </label>
-      {/*
-        🐨 wrap the code below in a <React.Suspense /> component
-        with a fallback.
-      */}
-      {showTilt ? <Tilt>This is tilted!</Tilt> : null}
+      <React.Suspense fallback={<div>Loading tilt...</div>}>
+        {showTilt ? <Tilt>This is tilted!</Tilt> : null}
+      </React.Suspense>
     </div>
   )
 }
@@ -35,6 +29,10 @@ function App() {
 🦉 Elaboration & Feedback
 After the instruction, copy the URL below into your browser and fill out the form:
 http://ws.kcd.im/?ws=React%20Performance&e=code%20splitting&em=
+
+- Peter the Product Manager is too hard to see within the text (it's really narrow on my screen, with my font)
+- The main README says that yarn is preferred, but all the instructions are with npm, which is confusing. If yarn is preferred, then I think the instructions should be all about yarn, as it should be when you speak.
+
 */
 
 ////////////////////////////////////////////////////////////////////
