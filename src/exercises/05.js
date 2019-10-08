@@ -18,11 +18,6 @@ const initialRowsColumns = Math.floor(dimensions / 2)
 
 function appReducer(state, action) {
   switch (action.type) {
-    // we're no longer managing the dogName state in our reducer
-    // 💣 remove this case
-    case 'TYPED_IN_DOG_INPUT': {
-      return {...state, dogName: action.dogName}
-    }
     case 'UPDATE_GRID': {
       return {
         ...state,
@@ -41,8 +36,6 @@ function appReducer(state, action) {
 
 function AppStateProvider({children}) {
   const [state, dispatch] = React.useReducer(appReducer, {
-    // 💣 remove the dogName state because we're no longer managing that
-    dogName: '',
     grid: initialGrid,
   })
   const value = [state, dispatch]
@@ -161,15 +154,12 @@ function Cell({cellWidth, cell}) {
 Cell = React.memo(Cell)
 
 function DogNameInput() {
-  // 🐨 replace the useAppState with a normal useState here to manage
-  // the dogName locally within this component
-  const [state, dispatch] = useAppState()
+  const [state, setState] = React.useState({dogName: null})
   const {dogName} = state
 
   function handleChange(event) {
     const newDogName = event.target.value
-    // 🐨 change this to call your state setter that you get from useState
-    dispatch({type: 'TYPED_IN_DOG_INPUT', dogName: newDogName})
+    setState({dogName: newDogName});
   }
 
   return (
@@ -191,16 +181,13 @@ function DogNameInput() {
 }
 
 function App() {
-  // 🐨 because the whole app doesn't need access to the AppState context,
-  // we can move that closer to only wrap the <ChangingGrid /> rather than all
-  // the components here
   return (
-    <AppStateProvider>
-      <div>
-        <DogNameInput />
+    <div>
+      <DogNameInput />
+      <AppStateProvider>
         <ChangingGrid />
-      </div>
-    </AppStateProvider>
+      </AppStateProvider>
+    </div>
   )
 }
 
